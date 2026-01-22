@@ -12,6 +12,7 @@ from .handlers import handle_ask_metagov_thread
 class AskTopicGroupsNode(FullNode):
     config_schema = AskTopicGroupsConfig
     
+    # NOTE: config_loader param is a workaround to force start ordering
     slack_app = lambda config, config_loader: SlackApp(
         token=config.env.slack_bot_token,
         signing_secret=config.env.slack_signing_secret)
