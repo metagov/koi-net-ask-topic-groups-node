@@ -3,7 +3,7 @@ from koi_net.processor.knowledge_object import KnowledgeObject
 from rid_lib.types import SlackMessage
 
 from .handler_context import ExtendedHandlerContext
-from .models import AskMetagovThread
+from .rid_types import AskMetagovThread
 
 
 @KnowledgeHandler.create(

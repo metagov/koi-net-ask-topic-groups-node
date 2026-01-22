@@ -8,6 +8,8 @@ from koi_net.config.full_node import (
     NodeProvides
 )
 
+from .rid_types import AskMetagovThread
+
 
 class SlackEnvConfig(EnvConfig):
     slack_bot_token: str
@@ -25,5 +27,5 @@ class AskTopicGroupsConfig(FullNodeConfig):
                 state=[]
             )
         ),
-        rid_types_of_interest=[KoiNetNode] # RID types this node should subscribe to
+        rid_types_of_interest=[KoiNetNode, AskMetagovThread] # RID types this node should subscribe to
     )
