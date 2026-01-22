@@ -1,5 +1,5 @@
 [project]
-name = "koi-net-CHANGE-NAME-node"
+name = "koi-net-ask-topic-groups-node"
 version = "0.1.0"
 description = "SET NODE DESCRIPTION"
 authors = [
@@ -8,7 +8,8 @@ authors = [
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "koi-net~=1.2.0"
+    "koi-net>=1.2.0",
+    "slack-bolt>=1.27.0",
 ]
 
 [project.urls]
