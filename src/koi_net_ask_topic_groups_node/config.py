@@ -1,3 +1,4 @@
+from pydantic import BaseModel, Field
 from rid_lib.types import KoiNetNode
 from koi_net.config.core import EnvConfig
 from koi_net.config.full_node import (
@@ -8,7 +9,7 @@ from koi_net.config.full_node import (
     NodeProvides
 )
 
-from .rid_types import AskMetagovThread
+from .rid_types import AskCoreThread
 
 
 class SlackEnvConfig(EnvConfig):
@@ -17,8 +18,12 @@ class SlackEnvConfig(EnvConfig):
     ask_tg_slack_app_token: str
     ask_tg_slack_user_token: str
 
+
+class SlackConfig(BaseModel):
+    team_id: str | None = None
+
 class AskTopicGroupsConfig(FullNodeConfig):
-    env: SlackEnvConfig = SlackEnvConfig()
+    env: SlackEnvConfig = Field(default_factory=SlackEnvConfig)
     koi_net: KoiNetConfig = KoiNetConfig(
         node_name="ask-topic-groups",   # human readable name for your node
         node_profile=NodeProfile(
@@ -27,5 +32,6 @@ class AskTopicGroupsConfig(FullNodeConfig):
                 state=[]
             )
         ),
-        rid_types_of_interest=[KoiNetNode, AskMetagovThread] # RID types this node should subscribe to
+        rid_types_of_interest=[KoiNetNode, AskCoreThread] # RID types this node should subscribe to
     )
+    slack: SlackConfig = SlackConfig()
