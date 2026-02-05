@@ -1,18 +1,20 @@
-from koi_net.utils import bind_logdir
+from koi_net import logging_context
 from slack_bolt.adapter.socket_mode import SocketModeHandler
+from koi_net.logging_context import LoggingContext
 
 
 class SocketMode:
-    def __init__(self, slack_app, config, root_dir):
-        self.slack_app = slack_app
-        self.config = config
-        self.root_dir = root_dir
+    def __init__(self, slack_app, config, logging_context: LoggingContext):
+        self.logging_context = logging_context
         
         self.handler = SocketModeHandler(
-            app=self.slack_app,
-            app_token=config.env.slack_app_token
+            app=slack_app,
+            app_token=config.env.ask_tg_slack_app_token
         )
     
-    @bind_logdir
     def start(self):
-        self.handler.connect()
+        with logging_context.bound_contextvars():
+            self.handler.connect()
+        
+    def stop(self):
+        self.handler.close()

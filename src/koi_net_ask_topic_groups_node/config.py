@@ -12,10 +12,10 @@ from .rid_types import AskMetagovThread
 
 
 class SlackEnvConfig(EnvConfig):
-    slack_bot_token: str
-    slack_signing_secret: str
-    slack_app_token: str
-    slack_user_token: str
+    ask_tg_slack_bot_token: str
+    ask_tg_slack_signing_secret: str
+    ask_tg_slack_app_token: str
+    ask_tg_slack_user_token: str
 
 class AskTopicGroupsConfig(FullNodeConfig):
     env: SlackEnvConfig = SlackEnvConfig()
