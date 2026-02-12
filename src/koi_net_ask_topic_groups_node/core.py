@@ -8,7 +8,7 @@ from .slack_config_manager import SlackConfigManager
 
 from .slack_handlers import SlackHandlers
 from .handler_context import ExtendedHandlerContext
-from .socket_mode import SocketMode
+from .socket_mode import SlackSocketMode
 from .config import AskTopicGroupsConfig
 from .knowledge_handlers import handle_ask_metagov_thread, handle_slack_usergroup
 
@@ -24,7 +24,7 @@ class AskTopicGroupsNode(FullNode):
         token=config.env.ask_tg_slack_user_token)
     
     handler_context = ExtendedHandlerContext
-    socket_mode = SocketMode
+    socket_mode = SlackSocketMode
     slack_handlers = SlackHandlers
     slack_config_manager = SlackConfigManager
     

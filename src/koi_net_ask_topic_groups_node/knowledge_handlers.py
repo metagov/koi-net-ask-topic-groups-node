@@ -33,7 +33,7 @@ def handle_ask_metagov_thread(ctx: ExtendedHandlerContext, kobj: KnowledgeObject
         ts=result["ts"]
     )
     
-    thread_link = ThreadLinkModel(thread, slack_msg)
+    thread_link = ThreadLinkModel(thread=thread, message=slack_msg)
     ctx.kobj_queue.push(bundle=Bundle.generate(
         rid=ThreadLink(slack_msg.team_id, slack_msg.channel_id, slack_msg.ts),
         contents=thread_link.model_dump()
@@ -68,7 +68,8 @@ def handle_slack_usergroup(ctx: ExtendedHandlerContext, kobj: KnowledgeObject):
         topic_group = bundle.validate_contents(TopicGroupModel)
     else:
         topic_group = TopicGroupModel.model_construct()
-        
+    
+    topic_group.usergroup = ug_rid
     topic_group.handle = ug_handle
     topic_group.name = ug_name
     topic_group.emoji = emoji_str

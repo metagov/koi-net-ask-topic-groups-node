@@ -2,10 +2,11 @@ from pydantic import BaseModel
 from rid_lib import RID
 from rid_lib.types import SlackMessage, SlackUser
 
-from .rid_types import AskCoreThread
+from .rid_types import AskCoreThread, SlackUserGroup
 
 
 class TopicGroupModel(BaseModel):
+    usergroup: SlackUserGroup
     handle: str
     name: str
     emoji: str
