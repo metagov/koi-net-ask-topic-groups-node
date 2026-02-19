@@ -1,8 +1,6 @@
 from dataclasses import dataclass, field
-from koi_net import logging_context
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
-from koi_net.logging_context import LoggingContext
 
 from .config import AskTopicGroupsConfig
 

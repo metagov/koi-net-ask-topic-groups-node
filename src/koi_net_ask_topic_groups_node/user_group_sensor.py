@@ -1,17 +1,11 @@
 from dataclasses import dataclass
 from logging import Logger
-from koi_net.processor.kobj_queue import KobjQueue
-from rid_lib.ext import Bundle, Cache
+from rid_lib.ext import Bundle
 from slack_bolt import App
+from koi_net.components import KobjQueue
 
-from .models import TopicGroupModel
+from .rid_types import SlackUserGroup
 
-from .rid_types import AskTopicGroup, SlackUserGroup
-
-
-lookup = {
-    "🏛️": "classical_building"
-}
 
 @dataclass
 class UserGroupSensor:
@@ -34,8 +28,8 @@ class UserGroupSensor:
             rid=ug_rid,
             contents=usergroup
         ))
-    
-    def start(self):
+        
+    def backfill_usergroups(self):
         resp = self.slack_app.client.usergroups_list()
         usergroups = resp.data["usergroups"]
         
@@ -50,32 +44,6 @@ class UserGroupSensor:
                 rid=ug_rid,
                 contents=usergroup
             ))
-            continue
-        
-            
-            
-            tg_emoji = None
-            for emoji in lookup:
-                if emoji in ug_name:
-                    tg_emoji = emoji
-                    print(ug_name, "->", lookup[emoji])
-                    break
-                
-            if not tg_emoji:
-                continue
-            
-            topic_group_rid = AskTopicGroup(ug_team_id, ug_id)
-            bundle = self.cache.read(topic_group_rid)
-            
-            if bundle:
-                topic_group = bundle.validate_contents(TopicGroupModel)
-                
-                
-            else:
-                
-                topic_group = TopicGroupModel(
-                    handle=ug_handle,
-                    name=ug_name,
-                    emoji=tg_emoji,
-                    users=ug_users
-                )
+    
+    def start(self):
+        self.backfill_usergroups()

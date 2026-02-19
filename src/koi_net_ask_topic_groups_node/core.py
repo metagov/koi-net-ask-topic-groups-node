@@ -2,15 +2,15 @@ from koi_net.core import FullNode
 from slack_bolt import App as SlackApp
 from slack_sdk import WebClient
 
+from .slack_event_handler import SlackEventHandler
+
+from .knowledge_handlers.slack_usergroup_handler import SlackUserGroupHandler
+from .knowledge_handlers.ask_thread_handler import AskThreadHandler
 from .user_group_sensor import UserGroupSensor
-
 from .slack_config_manager import SlackConfigManager
-
-from .slack_handlers import SlackHandlers
-from .handler_context import ExtendedHandlerContext
+from .slack_command_handler import SlackCommandHandler
 from .socket_mode import SlackSocketMode
 from .config import AskTopicGroupsConfig
-from .knowledge_handlers import handle_ask_metagov_thread, handle_slack_usergroup
 
 
 class AskTopicGroupsNode(FullNode):
@@ -23,14 +23,13 @@ class AskTopicGroupsNode(FullNode):
     slack_admin_client: WebClient = lambda config: WebClient(
         token=config.env.ask_tg_slack_user_token)
     
-    handler_context = ExtendedHandlerContext
     socket_mode = SlackSocketMode
-    slack_handlers = SlackHandlers
+    slack_command_handler = SlackCommandHandler
+    slack_event_handler = SlackEventHandler
     slack_config_manager = SlackConfigManager
     
     user_group_sensor = UserGroupSensor
     
-    knowledge_handlers = FullNode.knowledge_handlers + [
-        handle_ask_metagov_thread,
-        handle_slack_usergroup
-    ]
+    # knowledge handlers
+    ask_thread_handler = AskThreadHandler
+    slack_usergroup_handler = SlackUserGroupHandler

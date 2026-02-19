@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from rid_lib.types import KoiNetNode
-from koi_net.config.core import EnvConfig
+from koi_net.config.models import EnvConfig
 from koi_net.config.full_node import (
     FullNodeConfig, 
     KoiNetConfig, 
