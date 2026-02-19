@@ -9,7 +9,7 @@ from koi_net.config.full_node import (
     NodeProvides
 )
 
-from .rid_types import AskCoreThread
+from .rid_types import AskCoreThread, AskTopicGroup, SlackUserGroup
 
 
 class SlackEnvConfig(EnvConfig):
@@ -28,8 +28,8 @@ class AskTopicGroupsConfig(FullNodeConfig):
         node_name="ask-topic-groups",   # human readable name for your node
         node_profile=NodeProfile(
             provides=NodeProvides(
-                event=[],
-                state=[]
+                event=[AskTopicGroup],
+                state=[AskTopicGroup, SlackUserGroup]
             )
         ),
         rid_types_of_interest=[KoiNetNode, AskCoreThread] # RID types this node should subscribe to
