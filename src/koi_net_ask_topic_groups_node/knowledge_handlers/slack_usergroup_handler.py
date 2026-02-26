@@ -25,22 +25,20 @@ class SlackUserGroupHandler(KnowledgeHandler):
         ug_handle: str = kobj.contents["handle"]
         ug_name: str = kobj.contents["name"]
         ug_users: list[str] = kobj.contents["users"]
+        ug_description: str = kobj.contents["description"]
         
         if not ug_handle.startswith("tg-"):
             return
         
         tg_rid = AskTopicGroup(ug_rid.team_id, ug_rid.subteam_id)
         
-        lookup = {
-            "🏛️": "classical_building"
-        }
+        emoji_pattern = "emoji:"
+        emoji_index = ug_description.find(emoji_pattern)
         
         emoji_str = None
-        for emoji in lookup:
-            if emoji in ug_name:
-                emoji_str = lookup[emoji]
-                break
-            
+        if emoji_index >= 0:
+            emoji_str = ug_description[emoji_index + len(emoji_pattern):].split()[0]
+        
         user_rids = [SlackUser(ug_rid.team_id, user_id) for user_id in ug_users]
         
         bundle = self.cache.read(tg_rid)

@@ -1,12 +1,12 @@
 from pydantic import BaseModel, Field
 from rid_lib.types import KoiNetNode
-from koi_net.config.models import EnvConfig
-from koi_net.config.full_node import (
+from koi_net.config import (
     FullNodeConfig, 
     KoiNetConfig, 
     ServerConfig, 
-    NodeProfile, 
-    NodeProvides
+    FullNodeProfile, 
+    NodeProvides,
+    EnvConfig
 )
 
 from .rid_types import AskCoreThread, AskTopicGroup, SlackUserGroup
@@ -26,7 +26,7 @@ class AskTopicGroupsConfig(FullNodeConfig):
     env: SlackEnvConfig = Field(default_factory=SlackEnvConfig)
     koi_net: KoiNetConfig = KoiNetConfig(
         node_name="ask-topic-groups",   # human readable name for your node
-        node_profile=NodeProfile(
+        node_profile=FullNodeProfile(
             provides=NodeProvides(
                 event=[AskTopicGroup],
                 state=[AskTopicGroup, SlackUserGroup]

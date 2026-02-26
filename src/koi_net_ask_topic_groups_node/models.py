@@ -8,7 +8,7 @@ class TopicGroupModel(BaseModel):
     usergroup: SlackUserGroup
     handle: str
     name: str
-    emoji: str
+    emoji: str | None = None
     users: list[SlackUser] = []
     threads: list[AskCoreThread] = []
     
