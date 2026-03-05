@@ -28,7 +28,7 @@ class AskTopicGroupsConfig(FullNodeConfig):
         node_name="ask-topic-groups",   # human readable name for your node
         node_profile=FullNodeProfile(
             provides=NodeProvides(
-                event=[AskTopicGroup],
+                event=[AskTopicGroup, SlackUserGroup],
                 state=[AskTopicGroup, SlackUserGroup]
             )
         ),
