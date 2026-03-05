@@ -19,8 +19,23 @@ class AskThreadHandler(KnowledgeHandler):
     handler_type = HandlerType.Network
     rid_types = (AskCoreThread,)
     
+    def ensure_bot_in_channel(self, channel_id: str):
+        try:
+            result = self.slack_app.client.conversations_info(channel=channel_id)
+            channel = result["channel"]
+            
+            if not channel.get("is_member", False):
+                self.slack_app.client.conversations_join(channel=channel_id)
+                self.log.info(f"Joined channel #{channel_id}")
+        
+        except Exception as e:
+            self.log.error(f"Unhandled exception joining channel: {e}")
+    
     def handle(self, kobj: KnowledgeObject):
         thread: AskCoreThread = kobj.rid
+        
+        self.ensure_bot_in_channel(channel_id=thread.channel_id)
+        
         result = self.slack_app.client.chat_postMessage(
             channel=thread.channel_id,
             thread_ts=thread.ts,
