@@ -1,6 +1,6 @@
 [project]
 name = "koi-net-ask-topic-groups-node"
-version = "0.1.1"
+version = "0.2"
 description = "Topic groups KOI-net node for the ask network application."
 authors = [
     {name = "Luke Miller", email = "luke@metagov.org"}

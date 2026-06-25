@@ -7,6 +7,7 @@ from rid_lib.ext import Bundle
 from rid_lib.types import SlackUser, SlackUserGroup
 from slack_bolt import App
 
+from ..config import AskTopicGroupsConfig
 from ..models import TopicGroupModel
 from ..rid_types import AskTopicGroup
 
@@ -15,6 +16,7 @@ from ..rid_types import AskTopicGroup
 class SlackUserGroupHandler(KnowledgeHandler):
     slack_app: App
     cache: Cache
+    config: AskTopicGroupsConfig
     kobj_queue: KobjQueue
     
     handler_type = HandlerType.Network
@@ -27,7 +29,7 @@ class SlackUserGroupHandler(KnowledgeHandler):
         ug_users: list[str] = kobj.contents["users"]
         ug_description: str = kobj.contents["description"]
         
-        if not ug_handle.startswith("tg-"):
+        if not ug_handle.startswith(self.config.slack.topic_group_prefix):
             return
         
         tg_rid = AskTopicGroup(ug_rid.team_id, ug_rid.subteam_id)

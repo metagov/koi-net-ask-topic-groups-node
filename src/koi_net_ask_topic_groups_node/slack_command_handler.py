@@ -1,6 +1,6 @@
+import re
 from dataclasses import dataclass
 from logging import Logger
-import re
 
 from slack_bolt import App, Respond
 from slack_sdk import WebClient
@@ -21,15 +21,72 @@ class SlackCommandHandler:
     def register_handlers(self):
         self.slack_app.command("/join-topic")(self.topic_group_join)
         self.slack_app.command("/leave-topic")(self.topic_group_leave)
+        self.slack_app.command("/my-topics")(self.topic_group_check)
     
-    def get_user_group(self, ug_id: str):
+    def get_user_groups(self):
         resp = self.slack_app.client.usergroups_list()
         usergroups = resp["usergroups"]
+        return usergroups
         
-        for usergroup in usergroups:
+    def get_user_group(self, ug_id: str):
+        for usergroup in self.get_user_groups():
             if usergroup["id"] == ug_id:
                 return usergroup
-    
+            
+    def topic_group_check(self, ack, respond: Respond, command):
+        ack()
+        
+        user_id = command["user_id"]
+        
+        member_usergroups = []
+        for usergroup in self.get_user_groups():
+            ug_name: str = usergroup["name"]
+            ug_handle: str = usergroup["handle"]
+            
+            if not ug_handle.startswith(self.config.slack.topic_group_prefix):
+                continue
+            
+            ug_users: list[str] = self.slack_app.client.usergroups_users_list(
+                usergroup=usergroup["id"])['users']
+            
+            if user_id in ug_users:
+                member_usergroups.append(ug_name)
+        
+        if member_usergroups:
+            respond(blocks=[{
+                "type": "rich_text",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "You are currently a member of:"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_list",
+                        "style": "bullet",
+                        "indent": 0,
+                        "border": 0,
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": topic_group_name
+                                    }
+                                ]
+                            } for topic_group_name in member_usergroups
+                        ]
+                    }
+                ]
+            }])
+        else:
+            respond("You are not currently a member of any user groups")
+        
     def topic_group_join(self, ack, respond: Respond, command):
         ack()
 
@@ -43,7 +100,7 @@ class SlackCommandHandler:
         ug_name: str = usergroup["name"]
         ug_handle: str = usergroup["handle"]
         
-        if ug_handle.startswith("tg-"):
+        if ug_handle.startswith(self.config.slack.topic_group_prefix):
             ug_users: list[str] = self.slack_app.client.usergroups_users_list(usergroup=ug_id)['users']
             
             if user_id not in ug_users:
@@ -69,7 +126,7 @@ class SlackCommandHandler:
         ug_name: str = usergroup["name"]
         ug_handle: str = usergroup["handle"]
         
-        if ug_handle.startswith("tg-"):
+        if ug_handle.startswith(self.config.slack.topic_group_prefix):
             ug_users: list[str] = self.slack_app.client.usergroups_users_list(usergroup=ug_id)['users']
             
             if user_id in ug_users:

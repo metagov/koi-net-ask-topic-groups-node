@@ -21,6 +21,7 @@ class SlackEnvConfig(EnvConfig):
 
 class SlackConfig(BaseModel):
     team_id: str | None = None
+    topic_group_prefix: str = "tg-"
 
 class AskTopicGroupsConfig(FullNodeConfig):
     env: SlackEnvConfig = Field(default_factory=SlackEnvConfig)
